@@ -1,0 +1,126 @@
+{
+  "timestamp": "2026-02-25T11:54:44.428Z",
+  "reason": "compaction",
+  "status": {
+    "version": "2.0",
+    "lastUpdated": "2026-02-25T11:54:17.357Z",
+    "activeFeatures": [
+      "tiktok-redesign",
+      "tiktok-report-automation"
+    ],
+    "primaryFeature": "tiktok-redesign",
+    "features": {
+      "tiktok-redesign": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [
+          "v3.1.0: 시트명 이모지 ✅, KPI 카드 ✅, 가독성/시인성 개선 ✅, analysis_raw.json ✅",
+          "v3.2.0: 레이더 차트, 피로도 차트, CPA 목표선",
+          "v3.3.0: hooks 자동화, creative_lineage 지원"
+        ],
+        "documents": {
+          "plan": "docs/01-plan/features/tiktok-redesign.plan.md",
+          "design": "docs/02-design/features/tiktok-redesign.design.md"
+        },
+        "timestamps": {
+          "started": "2026-02-25T11:35:00.000Z",
+          "lastUpdated": "2026-02-25T20:50:00.000Z"
+        },
+        "lastFile": "run_analysis.py",
+        "completedItems": [
+          "시트명 이모지 (7개)",
+          "KPI 카드 형태 요약 대시보드",
+          "TIER 색상 개선 (셀별 강조)",
+          "행 높이/컬럼 너비 최적화",
+          "숫자 정렬 (우측) 및 포맷팅",
+          "변화율 ▲▼ 아이콘 및 색상",
+          "효율 판정 아이콘 (✅➡️⬇️🔴)",
+          "훅 판정 스타일 (유효/부분효과/효과없음)",
+          "지점 순위 표시 (🥇🥈🥉)",
+          "analysis_raw.json 생성 (QA 데이터)"
+        ]
+      },
+      "tiktok-report-automation": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-25T11:49:29.717Z",
+          "lastUpdated": "2026-02-25T11:54:17.357Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\tiktok-report-automation\\run_analysis.py"
+      }
+    },
+    "pipeline": {
+      "currentPhase": 3,
+      "level": "Dynamic",
+      "phaseHistory": [
+        {
+          "phase": "plan",
+          "feature": "tiktok-redesign",
+          "timestamp": "2026-02-25T11:35:00.000Z"
+        },
+        {
+          "phase": "design",
+          "feature": "tiktok-redesign",
+          "timestamp": "2026-02-25T11:45:00.000Z"
+        },
+        {
+          "phase": "do",
+          "feature": "tiktok-redesign",
+          "timestamp": "2026-02-25T20:45:00.000Z",
+          "note": "v3.1.0 가독성/시인성 개선 구현"
+        }
+      ]
+    },
+    "session": {
+      "startedAt": "2026-02-25T10:26:11.184Z",
+      "onboardingCompleted": true,
+      "lastActivity": "2026-02-25T11:54:17.357Z"
+    },
+    "history": [
+      {
+        "timestamp": "2026-02-25T11:35:00.000Z",
+        "feature": "tiktok-redesign",
+        "phase": "plan",
+        "action": "created"
+      },
+      {
+        "timestamp": "2026-02-25T11:45:00.000Z",
+        "feature": "tiktok-redesign",
+        "phase": "design",
+        "action": "created"
+      },
+      {
+        "timestamp": "2026-02-25T20:45:00.000Z",
+        "feature": "tiktok-redesign",
+        "phase": "do",
+        "action": "implemented",
+        "details": "v3.1.0 가독성/시인성 개선 완료"
+      },
+      {
+        "timestamp": "2026-02-25T11:49:29.718Z",
+        "feature": "tiktok-report-automation",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-25T11:49:40.875Z",
+        "feature": "tiktok-report-automation",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-25T11:54:17.357Z",
+        "feature": "tiktok-report-automation",
+        "phase": "do",
+        "action": "updated"
+      }
+    ]
+  }
+}

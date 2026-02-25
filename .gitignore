@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+
+# Output files (regenerated)
+output/
+logs/*.log
+
+# Input data (sensitive)
+input/*.csv
+input/*.xlsx
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+temp_*.txt
+nul
