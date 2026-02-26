@@ -393,6 +393,11 @@ def main():
         "build_pdf",
         os.path.join(PROJECT_ROOT, "skills", "report-generator", "scripts", "build_pdf.py")
     )
+    # v4.0.0: HTML 차트 모듈 로드
+    html_chart_module = load_module(
+        "build_html_charts",
+        os.path.join(PROJECT_ROOT, "skills", "report-generator", "scripts", "build_html_charts.py")
+    )
 
     # Phase 3 모듈 로드
     funnel_module = load_module(
@@ -528,6 +533,29 @@ def main():
         hook_results.get('strict_pairs'),
         target_cpa_map=target_cpa_map  # v3.2.0: 목표 CPA 전달
     )
+
+    # v4.0.0: HTML 인터랙티브 차트 생성
+    print("\n" + "=" * 60)
+    print("Phase 5: HTML Interactive Charts Generation (v4.0.0)")
+    print("=" * 60)
+    try:
+        html_path = html_chart_module.build_html_charts(
+            excel_output_dir,
+            results['creative_tier'],
+            results['age_summary'],
+            results['df_valid'],
+            hook_results.get('type_comparison'),
+            hook_results.get('strict_pairs'),
+            target_cpa_map=target_cpa_map
+        )
+        if html_path:
+            print(f"[OK] HTML charts generated -> {html_path}")
+        else:
+            print("[WARNING] HTML charts skipped (plotly not available)")
+    except Exception as e:
+        print(f"[WARNING] HTML chart generation failed: {e}")
+        print("[INFO] Install plotly for HTML charts: pip install plotly")
+        html_path = None
 
     # Phase 5: PDF 리포트 생성
     print("\n" + "=" * 60)

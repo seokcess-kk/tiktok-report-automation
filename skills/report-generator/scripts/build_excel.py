@@ -1,6 +1,10 @@
 """
-Excel 리포트 생성
+Excel 리포트 생성 (v4.0.0 - 데이터만)
 설계서 섹션 8 기준
+
+v4.0.0 변경: 차트는 별도 HTML 파일로 분리
+- Excel은 데이터 테이블만 포함
+- 차트는 build_html_charts.py에서 생성
 
 7개 시트:
 1. 요약 대시보드 - 전체 KPI + TIER 분포
@@ -26,33 +30,10 @@ except ImportError:
     OPENPYXL_AVAILABLE = False
     print("[WARNING] openpyxl not installed -> pip install openpyxl")
 
-# Chart functions - handle import from same directory
-import sys
-import os as os_module
-_current_dir = os_module.path.dirname(os_module.path.abspath(__file__))
-if _current_dir not in sys.path:
-    sys.path.insert(0, _current_dir)
-
-try:
-    from build_charts import (
-        add_tier_donut,
-        add_branch_cpa_bar,
-        add_creative_bubble_chart,
-        add_hook_comparison_chart,
-        add_age_efficiency_chart,
-        add_age_type_heatmap,
-        add_daily_combo_chart,
-        add_daily_ctr_line,
-        # v3.2.0 신규 차트
-        add_type_radar_chart,
-        add_fatigue_line_chart,
-        add_daily_cpa_trend_with_target,
-    )
-    CHARTS_AVAILABLE = True
-    print("[Charts] Chart functions loaded (v3.2.0)")
-except ImportError as e:
-    CHARTS_AVAILABLE = False
-    print(f"[WARNING] build_charts.py not found - charts will be skipped: {e}")
+# v4.0.0: 차트는 별도 HTML 파일로 분리 - Excel에는 차트 미삽입
+# 차트 함수는 build_html_charts.py에서 Plotly로 생성
+CHARTS_AVAILABLE = False
+print("[Excel] v4.0.0 - Data only mode (charts in separate HTML file)")
 
 
 # 스타일 정의
@@ -299,7 +280,8 @@ def df_to_sheet(ws, df, apply_border=True, apply_alignment=True, set_heights=Tru
                 if 'CPA' in col_name or '비용' in col_name or '총비용' in col_name:
                     cell.number_format = '#,##0'
                 elif 'CTR' in col_name or 'CVR' in col_name or '률' in col_name or '비중' in col_name:
-                    cell.number_format = '0.0%' if value < 1 else '0.00'
+                    # CTR/CVR은 이미 퍼센트 값 (0.76 = 0.76%)이므로 리터럴 % 사용
+                    cell.number_format = '0.00"%"'
                 elif '점수' in col_name:
                     cell.number_format = '0.00'
                 elif '전환' in col_name or '클릭' in col_name or '노출' in col_name:
@@ -629,6 +611,9 @@ def create_hook_sheet(ws, hook_type_df, hook_strict_df=None):
                 if 'CPA' in col_name:
                     cell.value = val
                     cell.number_format = '#,##0'
+                elif 'CTR' in col_name or 'CVR' in col_name:
+                    cell.value = val
+                    cell.number_format = '0.00"%"'
                 else:
                     cell.value = val
                     cell.number_format = '0.00'
@@ -920,7 +905,7 @@ def create_off_sheet(ws, off_df):
                 if 'CPA' in col_name or '비용' in col_name:
                     cell.number_format = '#,##0'
                 elif 'CTR' in col_name or 'CVR' in col_name:
-                    cell.number_format = '0.00'
+                    cell.number_format = '0.00"%"'
 
         ws.row_dimensions[r_idx].height = 20
 
