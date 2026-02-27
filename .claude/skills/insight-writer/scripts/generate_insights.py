@@ -133,24 +133,38 @@ class InsightGenerator:
 
         for _, row in self.hook_df.iterrows():
             verdict = row.get('훅판정', '')
+            ctr_change = row.get('CTR_변화율', 0)
 
-            if '유효' in verdict:
+            if '재가공 유효' in verdict:
+                # CTR+, CVR+ → 재가공 유효
                 self.add_insight(
                     category='CREATIVE_OPTIMIZATION',
                     level='high',
-                    title=f'{row["소재유형"]} 훅 효과 있음',
+                    title=f'{row["소재유형"]} 재가공 훅 효과 있음',
                     content=f"{row['소재유형']} 유형에서 재가공 훅이 효과적입니다. "
-                            f"CTR {row.get('CTR_변화율', 0):+.1f}% 변화.",
+                            f"CTR {ctr_change:+.1f}%, CVR도 개선되었습니다.",
                     action="재가공 전략을 다른 소재에도 적용하세요.",
                     confidence='확정'
                 )
+            elif '부분 효과' in verdict:
+                # CTR+ but CVR- 또는 CTR- but CVR+ → 부분 효과
+                self.add_insight(
+                    category='CREATIVE_OPTIMIZATION',
+                    level='medium',
+                    title=f'{row["소재유형"]} 훅 부분 효과',
+                    content=f"{row['소재유형']} 유형에서 재가공 훅이 부분적으로 효과가 있습니다. "
+                            f"CTR {ctr_change:+.1f}% 변화. 랜딩 페이지 점검이 필요합니다.",
+                    action="랜딩 페이지와 훅 메시지 일치 여부를 확인하세요.",
+                    confidence='확정'
+                )
             elif '효과 없음' in verdict:
+                # CTR-, CVR- → 재가공 효과 없음
                 self.add_insight(
                     category='CREATIVE_OPTIMIZATION',
                     level='medium',
                     title=f'{row["소재유형"]} 훅 효과 없음',
                     content=f"{row['소재유형']} 유형에서 재가공 훅이 효과가 없습니다. "
-                            f"CTR {row.get('CTR_변화율', 0):+.1f}% 변화.",
+                            f"CTR {ctr_change:+.1f}% 변화.",
                     action="원본 훅으로 복귀하거나 새로운 훅 전략을 테스트하세요.",
                     confidence='확정'
                 )

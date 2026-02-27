@@ -151,3 +151,52 @@ triggers: 인사이트 생성, 액션 플랜, 개선 제안
 ---
 
 *실행: `python run_analysis.py`*
+
+---
+
+## 스킬 자동 활성화 (v2.0)
+
+skill-rules.json 위치: `.claude/skills/skill-rules.json`
+
+| 작업 유형 | 자동 참조 스킬 |
+|----------|---------------|
+| CTR/TIER/소재 관련 | creative-analyzer |
+| Excel/PDF/차트 관련 | report-generator |
+| 데일리/스냅샷 관련 | daily-monitor |
+| 수치 하드코딩 감지 | data-integrity-guardrail (block) |
+
+## 외부 기억 장치
+
+새 작업 시작 전: `dev/active/[task]/` 폴더 확인
+진행 중 체크리스트: `dev/active/[task]/[task]-tasks.md`
+
+```
+dev/active/
+├── bug-fixes/
+│   ├── bug-fixes-plan.md
+│   ├── bug-fixes-context.md
+│   └── bug-fixes-tasks.md
+└── daily-monitor/
+    ├── daily-monitor-plan.md
+    ├── daily-monitor-context.md
+    └── daily-monitor-tasks.md
+```
+
+## 흔한 실수 경고 (v2.0)
+
+⚠️ **경로 변경됨**
+- `skills/` → `.claude/skills/`
+- `agents/` → `.claude/agents/`
+
+⚠️ **훅 판정 방향**
+- CTR 양수 = "부분 효과" 또는 "재가공 유효"
+- CTR 음수만 "재가공 효과 없음"
+- (방향 역전 버그 수정됨)
+
+⚠️ **PDF 한글 폰트**
+- `TTFont('NanumGothic', 경로)` 명시 필수
+- 테이블에도 폰트 적용 필요
+
+⚠️ **_calc 컬럼만 사용**
+- raw CTR/CVR/CPA 컬럼 직접 사용 금지
+- CTR_calc, CVR_calc, CPA_calc, LPV_rate_calc 사용

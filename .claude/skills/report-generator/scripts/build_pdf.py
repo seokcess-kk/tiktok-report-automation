@@ -53,9 +53,9 @@ def register_korean_font():
     return None
 
 
-def create_table_style():
-    """테이블 스타일 생성"""
-    return TableStyle([
+def create_table_style(font_name=None):
+    """테이블 스타일 생성 (한글 폰트 지원)"""
+    style_list = [
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4472C4')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
@@ -66,7 +66,11 @@ def create_table_style():
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#F2F2F2')),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#E8E8E8')]),
-    ])
+    ]
+    # 한글 폰트 적용
+    if font_name:
+        style_list.append(('FONTNAME', (0, 0), (-1, -1), font_name))
+    return TableStyle(style_list)
 
 
 def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
@@ -130,7 +134,7 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
 
     # ===== PAGE 1 =====
     # 제목
-    content.append(Paragraph("TikTok Ad Analysis Report", title_style))
+    content.append(Paragraph("TikTok 광고 분석 리포트", title_style))
     content.append(Spacer(1, 5*mm))
 
     # 기본 정보
@@ -141,53 +145,53 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
     avg_cpa = total_cost / total_conv if total_conv > 0 else 0
 
     info_text = f"""
-    <b>Analysis Period:</b> {date_min} ~ {date_max}<br/>
-    <b>Report Generated:</b> {datetime.now().strftime('%Y-%m-%d %H:%M')}<br/>
+    <b>분석 기간:</b> {date_min} ~ {date_max}<br/>
+    <b>리포트 생성:</b> {datetime.now().strftime('%Y-%m-%d %H:%M')}<br/>
     """
     content.append(Paragraph(info_text, normal_style))
     content.append(Spacer(1, 5*mm))
 
     # KPI 요약 테이블
-    content.append(Paragraph("Overall KPI Summary", heading_style))
+    content.append(Paragraph("전체 KPI 요약", heading_style))
 
     kpi_data = [
-        ['Metric', 'Value'],
-        ['Total Ad Spend', f'{total_cost:,.0f} KRW'],
-        ['Total Conversions', f'{total_conv:,.0f}'],
-        ['Average CPA', f'{avg_cpa:,.0f} KRW'],
-        ['Average CTR', f'{df_valid["clicks"].sum() / df_valid["impressions"].sum() * 100:.2f}%'],
-        ['Average CVR', f'{total_conv / df_valid["clicks"].sum() * 100:.2f}%'],
+        ['지표', '값'],
+        ['총 광고비', f'{total_cost:,.0f}원'],
+        ['총 전환수', f'{total_conv:,.0f}건'],
+        ['평균 CPA', f'{avg_cpa:,.0f}원'],
+        ['평균 CTR', f'{df_valid["clicks"].sum() / df_valid["impressions"].sum() * 100:.2f}%'],
+        ['평균 CVR', f'{total_conv / df_valid["clicks"].sum() * 100:.2f}%'],
     ]
 
     kpi_table = Table(kpi_data, colWidths=[80*mm, 80*mm])
-    kpi_table.setStyle(create_table_style())
+    kpi_table.setStyle(create_table_style(korean_font))
     content.append(kpi_table)
     content.append(Spacer(1, 8*mm))
 
     # TIER 분포
-    content.append(Paragraph("TIER Distribution", heading_style))
+    content.append(Paragraph("TIER 분포", heading_style))
 
     tier_dist = creative_df['TIER'].value_counts()
-    tier_data = [['TIER', 'Count', 'Description']]
+    tier_data = [['TIER', '소재수', '설명']]
     tier_desc = {
-        'TIER1': 'High Performance (CPA OK + CVR >= 5%)',
-        'TIER2': 'High CTR but CPA Over',
-        'TIER3': 'High Landing Rate but Low CVR',
-        'TIER4': 'Below Average',
-        'LOW_VOLUME': 'Insufficient Data',
-        'UNCLASSIFIED': 'Less than 7 days'
+        'TIER1': 'CPA 달성 + CVR 5% 이상 (최우수)',
+        'TIER2': 'CTR 우수 / CPA 초과',
+        'TIER3': '랜딩률 우수 / CVR 저조',
+        'TIER4': '전 지표 평균 이하',
+        'LOW_VOLUME': '표본 부족 (클릭<100, 비용<10만)',
+        'UNCLASSIFIED': '집행일수 7일 미만'
     }
     for tier in ['TIER1', 'TIER2', 'TIER3', 'TIER4', 'LOW_VOLUME', 'UNCLASSIFIED']:
         if tier in tier_dist.index:
             tier_data.append([tier, str(tier_dist[tier]), tier_desc.get(tier, '')])
 
     tier_table = Table(tier_data, colWidths=[30*mm, 25*mm, 105*mm])
-    tier_table.setStyle(create_table_style())
+    tier_table.setStyle(create_table_style(korean_font))
     content.append(tier_table)
     content.append(Spacer(1, 8*mm))
 
     # 지점별 성과 요약
-    content.append(Paragraph("Branch Performance Summary", heading_style))
+    content.append(Paragraph("지점별 성과 요약", heading_style))
 
     branch_summary = df_valid.groupby('지점').agg(
         Cost=('cost', 'sum'),
@@ -196,50 +200,50 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
     branch_summary['CPA'] = (branch_summary['Cost'] / branch_summary['Conv'].replace(0, np.nan)).round(0)
     branch_summary = branch_summary.sort_values('CPA')
 
-    branch_data = [['Branch', 'Cost (KRW)', 'Conversions', 'CPA (KRW)']]
+    branch_data = [['지점', '비용', '전환수', 'CPA']]
     for _, row in branch_summary.iterrows():
         branch_data.append([
             row['지점'],
-            f"{row['Cost']:,.0f}",
-            f"{row['Conv']:.0f}",
-            f"{row['CPA']:,.0f}" if pd.notna(row['CPA']) else 'N/A'
+            f"{row['Cost']:,.0f}원",
+            f"{row['Conv']:.0f}건",
+            f"{row['CPA']:,.0f}원" if pd.notna(row['CPA']) else 'N/A'
         ])
 
     branch_table = Table(branch_data, colWidths=[35*mm, 45*mm, 35*mm, 45*mm])
-    branch_table.setStyle(create_table_style())
+    branch_table.setStyle(create_table_style(korean_font))
     content.append(branch_table)
 
     # ===== PAGE 2 =====
     content.append(PageBreak())
 
     # Top/Bottom 소재
-    content.append(Paragraph("Top Performing Creatives (TIER1)", heading_style))
+    content.append(Paragraph("최우수 성과 소재 (TIER1)", heading_style))
 
     tier1 = creative_df[creative_df['TIER'] == 'TIER1'].nsmallest(5, 'CPA')
     if len(tier1) > 0:
-        top_data = [['Creative', 'CPA', 'CVR', 'CTR']]
+        top_data = [['소재명', 'CPA', 'CVR', 'CTR']]
         for _, row in tier1.iterrows():
             name = row['소재명'][:25] + '...' if len(row['소재명']) > 25 else row['소재명']
             top_data.append([
                 name,
-                f"{row['CPA']:,.0f}" if pd.notna(row['CPA']) else 'N/A',
+                f"{row['CPA']:,.0f}원" if pd.notna(row['CPA']) else 'N/A',
                 f"{row['CVR']:.2f}%" if pd.notna(row['CVR']) else 'N/A',
                 f"{row['CTR']:.2f}%" if pd.notna(row['CTR']) else 'N/A',
             ])
 
         top_table = Table(top_data, colWidths=[80*mm, 30*mm, 25*mm, 25*mm])
-        top_table.setStyle(create_table_style())
+        top_table.setStyle(create_table_style(korean_font))
         content.append(top_table)
     else:
-        content.append(Paragraph("No TIER1 creatives found.", normal_style))
+        content.append(Paragraph("TIER1 소재가 없습니다.", normal_style))
 
     content.append(Spacer(1, 8*mm))
 
     # 훅 개선 효과
-    content.append(Paragraph("Hook Effect Summary", heading_style))
+    content.append(Paragraph("훅 개선 효과 요약", heading_style))
 
     if hook_type_df is not None and len(hook_type_df) > 0:
-        hook_data = [['Creative Type', 'Original CTR', 'Reworked CTR', 'Change', 'Verdict']]
+        hook_data = [['소재유형', '신규 CTR', '재가공 CTR', '변화율', '판정']]
         for _, row in hook_type_df.iterrows():
             hook_data.append([
                 row.get('소재유형', 'N/A'),
@@ -250,51 +254,51 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
             ])
 
         hook_table = Table(hook_data, colWidths=[35*mm, 30*mm, 30*mm, 25*mm, 40*mm])
-        hook_table.setStyle(create_table_style())
+        hook_table.setStyle(create_table_style(korean_font))
         content.append(hook_table)
     else:
-        content.append(Paragraph("No hook comparison data available.", normal_style))
+        content.append(Paragraph("훅 비교 데이터가 없습니다.", normal_style))
 
     content.append(Spacer(1, 8*mm))
 
     # 이상 감지 알림
-    content.append(Paragraph("Anomaly Alerts", heading_style))
+    content.append(Paragraph("이상 감지 알림", heading_style))
 
     if anomalies_df is not None and len(anomalies_df) > 0:
         alert_count = len(anomalies_df)
-        content.append(Paragraph(f"Total {alert_count} anomalies detected. See Excel report for details.", normal_style))
+        content.append(Paragraph(f"총 {alert_count}건의 이상치가 감지되었습니다. 상세 내용은 Excel 리포트를 확인하세요.", normal_style))
 
         # 주요 이상치 유형별 카운트
         if '감지유형' in anomalies_df.columns:
             type_counts = anomalies_df['감지유형'].value_counts()
             for atype, count in type_counts.items():
-                content.append(Paragraph(f"  - {atype}: {count} cases", normal_style))
+                content.append(Paragraph(f"  - {atype}: {count}건", normal_style))
     else:
-        content.append(Paragraph("No anomalies detected.", normal_style))
+        content.append(Paragraph("감지된 이상치가 없습니다.", normal_style))
 
     content.append(Spacer(1, 8*mm))
 
     # 데이터 참고 사항
-    content.append(Paragraph("Data Notes", heading_style))
+    content.append(Paragraph("데이터 참고 사항", heading_style))
 
     notes = []
     if 'attribution_caution' in df_valid.columns:
         caution_count = df_valid['attribution_caution'].sum()
         if caution_count > 0:
-            notes.append(f"- Attribution caution: {caution_count} rows (click=0, conversion>0)")
+            notes.append(f"- 귀속 주의: {caution_count}건 (클릭=0, 전환>0)")
 
     if off_df is not None and len(off_df) > 0:
-        notes.append(f"- OFF creatives: {len(off_df)} (excluded from TIER analysis)")
+        notes.append(f"- OFF 소재: {len(off_df)}개 (TIER 분석에서 제외됨)")
 
     low_vol = creative_df[creative_df['TIER'] == 'LOW_VOLUME']
     if len(low_vol) > 0:
-        notes.append(f"- Low volume creatives: {len(low_vol)} (insufficient data for evaluation)")
+        notes.append(f"- 표본 부족 소재: {len(low_vol)}개 (추가 데이터 필요)")
 
     if notes:
         for note in notes:
             content.append(Paragraph(note, normal_style))
     else:
-        content.append(Paragraph("No special notes.", normal_style))
+        content.append(Paragraph("특이사항 없음", normal_style))
 
     # PDF 빌드
     doc.build(content)

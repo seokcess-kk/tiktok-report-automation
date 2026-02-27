@@ -367,46 +367,46 @@ def main():
     # 모듈 로드
     normalize_module = load_module(
         "normalize_tiktok_raw",
-        os.path.join(PROJECT_ROOT, "skills", "tiktok-normalizer", "scripts", "normalize_tiktok_raw.py")
+        os.path.join(PROJECT_ROOT, ".claude", "skills", "tiktok-normalizer", "scripts", "normalize_tiktok_raw.py")
     )
     parse_module = load_module(
         "parse_tiktok",
-        os.path.join(PROJECT_ROOT, "skills", "tiktok-parser", "scripts", "parse_tiktok.py")
+        os.path.join(PROJECT_ROOT, ".claude", "skills", "tiktok-parser", "scripts", "parse_tiktok.py")
     )
     score_module = load_module(
         "score_creatives",
-        os.path.join(PROJECT_ROOT, "skills", "creative-analyzer", "scripts", "score_creatives.py")
+        os.path.join(PROJECT_ROOT, ".claude", "skills", "creative-analyzer", "scripts", "score_creatives.py")
     )
     hook_module = load_module(
         "hook_comparison",
-        os.path.join(PROJECT_ROOT, "skills", "creative-analyzer", "scripts", "hook_comparison.py")
+        os.path.join(PROJECT_ROOT, ".claude", "skills", "creative-analyzer", "scripts", "hook_comparison.py")
     )
     anomaly_module = load_module(
         "detect_anomalies",
-        os.path.join(PROJECT_ROOT, "skills", "creative-analyzer", "scripts", "detect_anomalies.py")
+        os.path.join(PROJECT_ROOT, ".claude", "skills", "creative-analyzer", "scripts", "detect_anomalies.py")
     )
     excel_module = load_module(
         "build_excel",
-        os.path.join(PROJECT_ROOT, "skills", "report-generator", "scripts", "build_excel.py")
+        os.path.join(PROJECT_ROOT, ".claude", "skills", "report-generator", "scripts", "build_excel.py")
     )
     pdf_module = load_module(
         "build_pdf",
-        os.path.join(PROJECT_ROOT, "skills", "report-generator", "scripts", "build_pdf.py")
+        os.path.join(PROJECT_ROOT, ".claude", "skills", "report-generator", "scripts", "build_pdf.py")
     )
     # v4.0.0: HTML 차트 모듈 로드
     html_chart_module = load_module(
         "build_html_charts",
-        os.path.join(PROJECT_ROOT, "skills", "report-generator", "scripts", "build_html_charts.py")
+        os.path.join(PROJECT_ROOT, ".claude", "skills", "report-generator", "scripts", "build_html_charts.py")
     )
 
     # Phase 3 모듈 로드
     funnel_module = load_module(
         "merge_db",
-        os.path.join(PROJECT_ROOT, "skills", "funnel-analyzer", "scripts", "merge_db.py")
+        os.path.join(PROJECT_ROOT, ".claude", "skills", "funnel-analyzer", "scripts", "merge_db.py")
     )
     insight_module = load_module(
         "generate_insights",
-        os.path.join(PROJECT_ROOT, "skills", "insight-writer", "scripts", "generate_insights.py")
+        os.path.join(PROJECT_ROOT, ".claude", "skills", "insight-writer", "scripts", "generate_insights.py")
     )
 
     # Phase 0: raw 표준화
