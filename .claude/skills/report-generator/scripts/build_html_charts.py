@@ -680,15 +680,15 @@ def generate_html_template(charts, total_cost, total_conv, avg_cpa, avg_ctr, avg
     </div>
 
     <nav>
-        <button class="active" onclick="showSection('summary')">📊 요약</button>
-        <button onclick="showSection('tier')">🎬 TIER 분석</button>
-        <button onclick="showSection('hook')">🔄 훅 효과</button>
-        <button onclick="showSection('age')">👥 나이대</button>
-        <button onclick="showSection('daily')">📅 일별 트렌드</button>
+        <button class="active" onclick="showSection('summary')">요약</button>
+        <button onclick="showSection('tier')">TIER분석</button>
+        <button onclick="showSection('hook')">훅효과</button>
+        <button onclick="showSection('age')">나이대</button>
+        <button onclick="showSection('daily')">일별트렌드</button>
     </nav>
 
     <section id="summary" class="section active">
-        <h2>📊 요약 대시보드</h2>
+        <h2>요약 대시보드</h2>
         <div class="info-box">
             <strong>분석 소재:</strong> {creative_count}개 | <strong>TIER 분포:</strong> {tier_text}
         </div>
@@ -706,7 +706,7 @@ def generate_html_template(charts, total_cost, total_conv, avg_cpa, avg_ctr, avg
     </section>
 
     <section id="tier" class="section">
-        <h2>🎬 소재 TIER 분석</h2>
+        <h2>소재 TIER 분석</h2>
         <div class="chart-grid">
             <div class="chart-box chart-full">
                 {charts.get('creative_bubble', '<p>차트 없음</p>')}
@@ -715,7 +715,7 @@ def generate_html_template(charts, total_cost, total_conv, avg_cpa, avg_ctr, avg
     </section>
 
     <section id="hook" class="section">
-        <h2>🔄 훅 개선 효과</h2>
+        <h2>훅 개선 효과</h2>
         <div class="chart-grid">
             <div class="chart-box chart-full">
                 {charts.get('hook_comparison', '<p>훅 비교 데이터 없음</p>')}
@@ -724,7 +724,7 @@ def generate_html_template(charts, total_cost, total_conv, avg_cpa, avg_ctr, avg
     </section>
 
     <section id="age" class="section">
-        <h2>👥 나이대 분석</h2>
+        <h2>나이대 분석</h2>
         <div class="chart-grid">
             <div class="chart-box">
                 {charts.get('age_efficiency', '<p>차트 없음</p>')}
@@ -739,7 +739,7 @@ def generate_html_template(charts, total_cost, total_conv, avg_cpa, avg_ctr, avg
     </section>
 
     <section id="daily" class="section">
-        <h2>📅 일별 트렌드</h2>
+        <h2>일별 트렌드</h2>
         <div class="chart-grid">
             <div class="chart-box chart-full">
                 {charts.get('daily_trend', '<p>차트 없음</p>')}

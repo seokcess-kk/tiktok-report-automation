@@ -146,13 +146,13 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
 
     info_text = f"""
     <b>분석 기간:</b> {date_min} ~ {date_max}<br/>
-    <b>리포트 생성:</b> {datetime.now().strftime('%Y-%m-%d %H:%M')}<br/>
+    <b>생성일:</b> {datetime.now().strftime('%Y-%m-%d %H:%M')}<br/>
     """
     content.append(Paragraph(info_text, normal_style))
     content.append(Spacer(1, 5*mm))
 
     # KPI 요약 테이블
-    content.append(Paragraph("전체 KPI 요약", heading_style))
+    content.append(Paragraph("1. 전체 KPI 요약", heading_style))
 
     kpi_data = [
         ['지표', '값'],
@@ -169,7 +169,7 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
     content.append(Spacer(1, 8*mm))
 
     # TIER 분포
-    content.append(Paragraph("TIER 분포", heading_style))
+    content.append(Paragraph("2. TIER 분포", heading_style))
 
     tier_dist = creative_df['TIER'].value_counts()
     tier_data = [['TIER', '소재수', '설명']]
@@ -191,7 +191,7 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
     content.append(Spacer(1, 8*mm))
 
     # 지점별 성과 요약
-    content.append(Paragraph("지점별 성과 요약", heading_style))
+    content.append(Paragraph("3. 지점별 성과 요약", heading_style))
 
     branch_summary = df_valid.groupby('지점').agg(
         Cost=('cost', 'sum'),
@@ -217,7 +217,7 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
     content.append(PageBreak())
 
     # Top/Bottom 소재
-    content.append(Paragraph("최우수 성과 소재 (TIER1)", heading_style))
+    content.append(Paragraph("4. 최우수 성과 소재 (TIER1)", heading_style))
 
     tier1 = creative_df[creative_df['TIER'] == 'TIER1'].nsmallest(5, 'CPA')
     if len(tier1) > 0:
@@ -240,7 +240,7 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
     content.append(Spacer(1, 8*mm))
 
     # 훅 개선 효과
-    content.append(Paragraph("훅 개선 효과 요약", heading_style))
+    content.append(Paragraph("5. 훅 개선 효과 요약", heading_style))
 
     if hook_type_df is not None and len(hook_type_df) > 0:
         hook_data = [['소재유형', '신규 CTR', '재가공 CTR', '변화율', '판정']]
@@ -262,7 +262,7 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
     content.append(Spacer(1, 8*mm))
 
     # 이상 감지 알림
-    content.append(Paragraph("이상 감지 알림", heading_style))
+    content.append(Paragraph("6. 이상 감지 알림", heading_style))
 
     if anomalies_df is not None and len(anomalies_df) > 0:
         alert_count = len(anomalies_df)
@@ -279,7 +279,7 @@ def build_pdf(output_dir: str, creative_df: pd.DataFrame, age_df: pd.DataFrame,
     content.append(Spacer(1, 8*mm))
 
     # 데이터 참고 사항
-    content.append(Paragraph("데이터 참고 사항", heading_style))
+    content.append(Paragraph("7. 데이터 참고 사항", heading_style))
 
     notes = []
     if 'attribution_caution' in df_valid.columns:
